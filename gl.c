@@ -1,8 +1,6 @@
 #include "v2bg.h"
 #include <stdio.h>
 
-void		Draw_Foreground(t_ctx ctx);
-
 GLXContext	create_glx_context(t_ctx ctx)
 {
 	int			attributes[] = {GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER,
@@ -32,7 +30,7 @@ void	CTXFree(t_ctx ctx)
 	XCloseDisplay(ctx.dp);
 }
 
-void	render_loop(t_ctx ctx, void (*Draw_Foreground)(t_ctx ctx)))
+void	render_loop(t_ctx ctx, void (*Draw_Foreground)(t_ctx))
 {
 	ctx.glx = create_glx_context(ctx);
 	if (!ctx.glx)
