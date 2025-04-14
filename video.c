@@ -1,5 +1,34 @@
 #include "v2bg.h"
 
+int	init_ffmpeg(const char *filename, AVFormatContext **fmt_ctx)
+{
+	avformat_network_init();
+	if (avformat_open_input(fmt_ctx, filename, NULL, NULL) != 0)
+	{
+		fprintf(stderr, "Could not open video file\n");
+		return (-1);
+	}
+	if (avformat_find_stream_info(*fmt_ctx, NULL) < 0)
+		return (-1);
+	return (0);
+}
+
+int	fint_video_stream_index(AVFormatContext *fmt_ctx)
+{
+	int	video_stream_idx;
+
+	video_stream_idx = -1;
+	for (unsigned int i = 0; i < fmt_ctx->nb_streams; i++)
+	{
+		if (fmt_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+		{
+			video_stream_idx = i;
+			break ;
+		}
+	}
+	return (video_stream_idx);
+}
+
 t_vid	*init_video(t_ctx ctx)
 {
 	t_vid	*vtx;
