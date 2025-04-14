@@ -1,65 +1,58 @@
-#include <GL/gl.h>
-#include <GL/glx.h>
-#include <X11/Xatom.h>
-#include <X11/Xlib.h>
+#include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-Display	*initialize_display(void)
+t_ctx	initialize_display(void)
 {
-	Display	*display;
+	t_ctx	ctx;
 
-	display = XOpenDisplay(NULL);
-	if (!display)
+	ctx.dp = XOpenDisplay(NULL);
+	if (!ctx.dp)
 	{
 		fprintf(stderr, "Cannot open display\n");
-		return (NULL);
+		exit(1);
 	}
-	return (display);
+	ctx.screen = DefaultScreen(ctx.dp);
+	ctx.root = RootWindow(ctx.dp, ctx.screen);
+	return (ctx);
 }
 
-int	get_default_screen(Display *dp)
+t_ctx	create_window_ctx(t_ctx ctx)
 {
-	return (DefaultScreen(dp));
+	ctx.win = XCreateSimpleWindow(ctx.dp, ctx.root, 0, 0, DisplayWidth(ctx.dp,
+				ctx.screen), DisplayHeight(ctx.dp, ctx.screen), 0,
+			WhitePixel(ctx.dp, ctx.screen), BlackPixel(ctx.dp, ctx.screen));
+	return (ctx);
 }
-
-Window	get_root_window(Display *dp, int screen)
-{
-	return (RootWindow(dp, screen));
-}
-
-Window	create_fullscreen_window(Display *dp, Window root, int screen)
-{
-	return (XCreateSimpleWindow(dp, root, 0, 0, DisplayWidth(dp, screen),
-			DisplayHeight(dp, screen), 0, WhitePixel(dp, screen), BlackPixel(dp,
-				screen)));
-}
-
-int	change_property(Display *dp, Window win)
+t_ctx	change_property(t_ctx ctx)
 {
 	Atom	window_type;
 	Atom	window_type_desktop;
 
-	window_type = XInternAtom(dp, "_NET_WM_WINDOW_TYPE", False);
-	window_type_desktop = XInternAtom(dp, "_NET_WM_WINDOW_TYPE_DESKTOP", False);
-	return (XChangeProperty(dp, win, window_type, XA_ATOM, 32, PropModeReplace,
-			(unsigned char *)&window_type_desktop, 1));
+	window_type = XInternAtom(ctx.dp, "_NET_WM_WINDOW_TYPE", False);
+	window_type_desktop = XInternAtom(ctx.dp, "_NET_WM_WINDOW_TYPE_DESKTOP",
+			False);
+	XChangeProperty(ctx.dp, ctx.win, window_type, XA_ATOM, 32, PropModeReplace,
+		(unsigned char *)&window_type_desktop, 1);
+	return (ctx);
 }
 
-int	attributes(Display *dp, const Window win)
+t_ctx	attributes_ctx(t_ctx ctx)
 {
 	XSetWindowAttributes	attrs;
 
 	attrs.override_redirect = True;
-	return (XChangeWindowAttributes(dp, win, CWOverrideRedirect, &attrs));
+	XChangeWindowAttributes(ctx.dp, ctx.win, CWOverrideRedirect, &attrs);
+	return (ctx);
 }
 
-void	lower_to_background(const Display *dp, const Window win)
+t_ctx	lower_to_background(t_ctx ctx)
 {
-	XMapWindow((Display *)dp, win);
-	XLowerWindow((Display *)dp, win);
-	XFlush((Display *)dp);
+	XMapWindow(ctx.dp, ctx.win);
+	XLowerWindow(ctx.dp, ctx.win);
+	XFlush(ctx.dp);
+	return (ctx);
 }
 
 GLXContext	create_glx_context(Display *dp, Window win)
@@ -99,18 +92,14 @@ void	render_loop(Display *dp, Window win)
 
 int	create_destroy_loop(void)
 {
-	Display	*dp;
-	int		screen;
+	t_ctx	ctx;
 
-	Window root, win;
-	dp = initialize_display();
-	screen = get_default_screen(dp);
-	root = get_root_window(dp, screen);
-	win = create_fullscreen_window(dp, root, screen);
-	change_property(dp, win);
-	attributes(dp, win);
-	lower_to_background(dp, win);
-	render_loop(dp, win);
+	ctx = initialize_display();
+	ctx = create_window_ctx(ctx);
+	ctx = change_property(ctx);
+	ctx = attributes_ctx(ctx);
+	ctx = lower_to_background(ctx);
+	render_loop(ctx.dp, ctx.win);
 	return (0);
 }
 
