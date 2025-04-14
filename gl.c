@@ -30,12 +30,13 @@ void	CTXFree(t_ctx ctx)
 	XCloseDisplay(ctx.dp);
 }
 
-void	render_loop(t_ctx ctx, void (*Draw_Foreground)(t_ctx))
+void	render_loop(t_ctx ctx, t_vid *vtx, void (*Draw_Foreground)(t_ctx,
+			t_vid *))
 {
 	ctx.glx = create_glx_context(ctx);
 	if (!ctx.glx)
 		return ;
 	while (1)
-		Draw_Foreground(ctx);
+		Draw_Foreground(ctx, vtx);
 	CTXFree(ctx);
 }
