@@ -3,23 +3,25 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+float	angle = 0.0f;
 void	Draw_Foreground(t_ctx ctx, t_vid *video)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, video->texture);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, video->width, video->height, GL_RGB,
-		GL_UNSIGNED_BYTE, video->frame_data);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0, 1.0);
-	glVertex2f(-1.0, -1.0);
-	glTexCoord2f(1.0, 1.0);
-	glVertex2f(1.0, -1.0);
-	glTexCoord2f(1.0, 0.0);
-	glVertex2f(1.0, 1.0);
-	glTexCoord2f(0.0, 0.0);
-	glVertex2f(-1.0, 1.0);
+	glPushMatrix();
+	glRotatef(angle, 0.0f, 0.0f, 1.0f);
+	glBegin(GL_TRIANGLES);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex2f(0.0f, 1.0f);
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex2f(-1.0f, -1.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex2f(1.0f, -1.0f);
 	glEnd();
+	glPopMatrix();
 	glXSwapBuffers(ctx.dp, ctx.win);
+	angle += 0.5f;
+	if (angle >= 360.0f)
+		angle -= 360.0f;
 }
 
 int	create_destroy_loop(void)
