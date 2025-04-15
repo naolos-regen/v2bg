@@ -31,31 +31,14 @@ void	CTXFree(t_ctx ctx)
 	XCloseDisplay(ctx.dp);
 }
 
-void	render_loop(t_ctx ctx, t_vid *vtx, t_cod *cod,
-		void (*Draw_Foreground)(t_ctx, t_vid *))
+void	render_loop(t_ctx ctx, void (*Draw_Foreground)(t_ctx))
 {
 	ctx.glx = create_glx_context(ctx);
 	if (!ctx.glx)
 		return ;
-	printf("Created texture ID: %u\n", cod->vid->texture);
 	while (1)
 	{
-		if (av_read_frame(cod->fmt_ctx, cod->packet) >= 0)
-		{
-			if (cod->packet->stream_index == cod->video_stream_index)
-			{
-				if (avcodec_send_packet(cod->codec_ctx, cod->packet) == 0
-					&& avcodec_receive_frame(cod->codec_ctx, cod->frame) == 0)
-				{
-					convert_frame_to_rgb(cod->frame, vtx, cod->codec_ctx);
-					glBindTexture(GL_TEXTURE_2D, vtx->texture);
-					glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, vtx->width,
-						vtx->height, GL_RGB, GL_UNSIGNED_BYTE, vtx->frame_data);
-				}
-			}
-			av_packet_unref(cod->packet);
-		}
-		Draw_Foreground(ctx, vtx);
+		Draw_Foreground(ctx);
 		usleep(16666); // ~60fps
 	}
 	CTXFree(ctx);
