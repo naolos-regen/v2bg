@@ -13,15 +13,15 @@ t_ctx	init_display(void)
 		exit(1);
 	}
 	ctx.screen = DefaultScreen(ctx.dp);
-	ctx.root = RootWindow(ctx.dp, ctx.screen);
+	ctx.root   = RootWindow(ctx.dp, ctx.screen);
 	return (ctx);
 }
 
 t_ctx	create_window(t_ctx ctx)
 {
 	ctx.win = XCreateSimpleWindow(ctx.dp, ctx.root, 0, 0, DisplayWidth(ctx.dp,
-				ctx.screen), DisplayHeight(ctx.dp, ctx.screen), 0,
-			WhitePixel(ctx.dp, ctx.screen), BlackPixel(ctx.dp, ctx.screen));
+				ctx.screen), DisplayHeight(ctx.dp, ctx.screen), 1,
+			BlackPixel(ctx.dp, ctx.screen), WhitePixel(ctx.dp, ctx.screen));
 	return (ctx);
 }
 

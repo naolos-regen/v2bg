@@ -25,11 +25,9 @@ int	create_destroy_loop(void)
 	ctx = set_attributes(ctx);
 	ctx = lower_to_bg(ctx);
 	
-	
 	mpv = create_mpv_handle();
-	
 	mpv = set_mpv_options(mpv, ctx);
-	mpv = initialize_mpv_and_play(mpv, "video.mp4");
+	mpv = initialize_mpv_and_play(mpv, "video.mkv");
 	render_loop(ctx, mpv, Draw_Foreground);
 	return (0);
 }
