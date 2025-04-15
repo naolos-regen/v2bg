@@ -5,14 +5,11 @@
 
 void	Draw_Foreground(t_ctx ctx)
 {
-	glDisable(GL_TEXTURE_2D);
-	glXSwapBuffers(ctx.dp, ctx.win);
 }
 
 int	create_destroy_loop(void)
 {
 	t_ctx	ctx;
-
 	ctx = init_display();
 	ctx = create_window(ctx);
 	ctx = change_property(ctx);
