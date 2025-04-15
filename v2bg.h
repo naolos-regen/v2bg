@@ -3,6 +3,7 @@
 
 # include <X11/Xatom.h>
 # include <X11/Xlib.h>
+# include <X11/Xutil.h>
 # include <libavcodec/avcodec.h>
 # include <libavformat/avformat.h>
 # include <libavutil/imgutils.h>
@@ -37,6 +38,7 @@ t_ctx				change_property(t_ctx ctx);
 t_ctx				set_attributes(t_ctx ctx);
 t_ctx				lower_to_bg(t_ctx ctx);
 
+// gl.c 
 void				CTXFree(t_ctx ctx);
 void				render_loop(t_ctx ctx, void (*Draw_Foreground)(t_ctx));
 
