@@ -26,20 +26,23 @@ void	Draw_Foreground(t_ctx ctx, t_vid *video)
 int	create_destroy_loop(void)
 {
 	t_ctx	ctx;
-	t_vid	*vtx;
+	t_cod	*cod;
 
 	ctx = init_display();
 	ctx = create_window(ctx);
 	ctx = change_property(ctx);
 	ctx = set_attributes(ctx);
 	ctx = lower_to_bg(ctx);
-	vtx = init_video(ctx);
-	if (!vtx)
+	cod = init_decoder("video.mp4");
+	if (!cod)
 	{
-		fprintf(stderr, "Failed to init vid\n");
+		fprintf(stderr, "Failed to init decoder\n");
 		exit(1);
 	}
-	render_loop(ctx, vtx, Draw_Foreground);
+	render_loop(ctx, cod->vid, cod, Draw_Foreground);
+	free_video(cod->vid);
+	free_video_resources(*cod);
+	free(cod);
 	return (0);
 }
 

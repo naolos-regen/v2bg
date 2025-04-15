@@ -18,6 +18,8 @@ int	find_video_stream_index(AVFormatContext *fmt_ctx)
 	unsigned int	i;
 	int				video_stream_idx;
 
+	i = 0;
+	video_stream_idx = -1;
 	while (i < fmt_ctx->nb_streams)
 	{
 		if (fmt_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
@@ -52,6 +54,7 @@ int	read_first_frame(AVFormatContext *fmt_ctx, AVPacket *packet,
 {
 	while (av_read_frame(fmt_ctx, packet) >= 0)
 	{
+		// todo: this breaks
 		// check if packet and codec have the same index on stream
 		if (avcodec_send_packet(codec_ctx, packet) == 0
 			&& avcodec_receive_frame(codec_ctx, frame) == 0)
@@ -73,6 +76,11 @@ int	convert_frame_to_rgb(AVFrame *frame, t_vid *vid, AVCodecContext *codec_ctx)
 	sws_scale(sws_ctx, (const uint8_t *const *)frame->data, frame->linesize, 0,
 		codec_ctx->height, dest, dest_linesize);
 	sws_freeContext(sws_ctx);
+	// Debugging: Print out first few pixels of the converted frame
+	for (int i = 0; i < 10; ++i)
+	{
+		printf("Converted Frame Data[%d]: %d\n", i, vid->frame_data[i]);
+	}
 	return (0);
 }
 
@@ -123,6 +131,13 @@ int	decode_first_frame(t_cod *cod)
 
 int	setup_texture_data(t_cod *cod)
 {
+	cod->vid = malloc(sizeof(t_vid));
+	if (!cod->vid)
+	{
+		fprintf(stderr, "Failed to alloc vid\n");
+		return (-1);
+	}
+	memset(cod->vid, 0, sizeof(t_vid));
 	cod->vid->width = cod->codec_ctx->width;
 	cod->vid->height = cod->codec_ctx->height;
 	cod->vid->frame_data = malloc(cod->vid->width * cod->vid->height * 3);
