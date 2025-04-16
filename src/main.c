@@ -1,4 +1,4 @@
-#include "v2bg.h"
+#include "../includes/v2bg.h"
 #include <unistd.h>
 
 void	Draw_Foreground(t_ctx ctx, t_mpv mpv)
