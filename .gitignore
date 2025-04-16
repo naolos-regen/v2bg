@@ -1,3 +1,7 @@
 .ccls*/*
 *.mp4
 *.mkv
+*.o
+obj/*.o
+v2bg
+
