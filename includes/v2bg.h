@@ -40,6 +40,5 @@ void				render_loop(t_ctx ctx, t_mpv mpv, void (*Draw_Foreground)(t_ctx, t_mpv))
 
 // Main.c
 void				Draw_Foreground(t_ctx ctx, t_mpv mpv);
-int				create_destroy_loop(void);
 
 #endif

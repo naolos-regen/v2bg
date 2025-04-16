@@ -1,4 +1,5 @@
 #include "../includes/v2bg.h"
+#include <fcntl.h>
 #include <unistd.h>
 
 void	Draw_Foreground(t_ctx ctx, t_mpv mpv)
@@ -14,25 +15,37 @@ void	Draw_Foreground(t_ctx ctx, t_mpv mpv)
 	XFlush(ctx.dp);
 }
 
-int	create_destroy_loop(void)
+int 	cmd_helper(int argc, char **argv)
 {
-	t_ctx	ctx;
-	t_mpv   mpv;
-	
-	ctx = init_display();
-	ctx = create_window(ctx);
-	ctx = change_property(ctx);
-	ctx = set_attributes(ctx);
-	ctx = lower_to_bg(ctx);
-	
-	mpv = create_mpv_handle();
-	mpv = set_mpv_options(mpv, ctx);
-	mpv = initialize_mpv_and_play(mpv, "video.mkv");
-	render_loop(ctx, mpv, Draw_Foreground);
+	int n;
+	if (argc < 2)
+	{
+		write(STDERR_FILENO, "File name missing.\n", 19);
+		return (1);
+	}
+	if (argc > 2)
+	{
+		write(STDERR_FILENO, "Too many arguments.\n", 20);
+		return (1);
+	}
+	if ((n = open(argv[1], O_RDONLY)) == -1)
+	{
+		write(STDERR_FILENO, "Cannot read file.\n", 18);
+		return (1);
+	}
 	return (0);
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-	return (create_destroy_loop());
+	t_ctx	ctx;
+	t_mpv	mpv;
+	
+	if (cmd_helper(argc, argv) == 0)
+	{
+		ctx = lower_to_bg(set_attributes(change_property(create_window(init_display()))));
+		mpv = initialize_mpv_and_play(set_mpv_options(create_mpv_handle(), ctx), argv[1]);
+		render_loop(ctx, mpv, Draw_Foreground);
+	}
+	return (0);
 }
