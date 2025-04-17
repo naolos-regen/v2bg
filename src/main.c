@@ -11,10 +11,14 @@ void	Handle_Events(t_ctx ctx, t_mpv mpv)
 
 		switch(ctx.ev.type) { 
 			// ??? changing Workspace affects FocusOut FocusIn too damn
-			case FocusOut:
+			// Them being opposite is the correct way doe. In a sense of reading at least
+			// ok so what the fuck is going on on DWM where there are no workspaces it works like the naming conventon
+			// on I3 it doesn't
+			// This is why we can't have nice things in life :(
+			case FocusIn:
 				mpv_set_option_string(mpv.mpv, "mute", "no");
 			break;
-			case FocusIn:
+			case FocusOut:
 				mpv_set_option_string(mpv.mpv, "mute", "yes");
 			break;
 			default:
