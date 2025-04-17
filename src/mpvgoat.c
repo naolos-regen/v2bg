@@ -18,6 +18,7 @@ t_mpv	create_mpv_handle(void)
 t_mpv	set_mpv_options(t_mpv mpv, t_ctx ctx)
 {	
 	snprintf(mpv.wid_str, sizeof(mpv.wid_str), "%lu", ctx.win);
+
 	mpv_set_option_string(mpv.mpv, "vo", "gpu-next");
 	mpv_set_option_string(mpv.mpv, "gpu-api", "vulkan");
 	mpv_set_option_string(mpv.mpv, "wid", mpv.wid_str);

@@ -22,6 +22,8 @@ t_ctx	create_window(t_ctx ctx)
 	ctx.win = XCreateSimpleWindow(ctx.dp, ctx.root, 0, 0, DisplayWidth(ctx.dp,
 				ctx.screen), DisplayHeight(ctx.dp, ctx.screen), 1,
 			BlackPixel(ctx.dp, ctx.screen), WhitePixel(ctx.dp, ctx.screen));
+	// read more about XSelectInput Enums
+	XSelectInput(ctx.dp, ctx.win, FocusChangeMask | ExposureMask | KeyPressMask | ButtonPressMask);
 	return (ctx);
 }
 

@@ -8,6 +8,18 @@ void	Handle_Events(t_ctx ctx, t_mpv mpv)
 	while (XPending(ctx.dp))
 	{
 		XNextEvent(ctx.dp, &ctx.ev);
+
+		switch(ctx.ev.type) { 
+			// ??? changing Workspace affects FocusOut FocusIn too damn
+			case FocusOut:
+				mpv_set_option_string(mpv.mpv, "mute", "no");
+			break;
+			case FocusIn:
+				mpv_set_option_string(mpv.mpv, "mute", "yes");
+			break;
+			default:
+				break;
+		}
 	}
 	while ((mpv.event = mpv_wait_event(mpv.mpv, 0.0))
 		&& mpv.event->event_id != MPV_EVENT_NONE)
