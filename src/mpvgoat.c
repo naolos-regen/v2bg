@@ -29,14 +29,14 @@ t_mpv	set_mpv_options(t_mpv mpv, t_ctx ctx)
 	return (mpv);
 }
 
-t_mpv	initialize_mpv_and_play(t_mpv mpv, const char *filename)
+t_mpv	initialize_mpv_and_play(t_mpv mpv, const char *file_name)
 {	
 	if (mpv_initialize(mpv.mpv) < 0)
 	{
 		fprintf(stderr, "mpv_init error\n");
 		exit(1);
 	}
-	const char *cmd[] = { "loadfile", filename, NULL };
+	const char *cmd[] = { "loadfile", file_name, NULL };
 	mpv_command(mpv.mpv, cmd);
 	return (mpv);
 }
