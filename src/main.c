@@ -1,15 +1,17 @@
 #include "../includes/v2bg.h"
+#include "../includes/atoms.h"
+#include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
 
 
-void	Handle_Events(t_ctx ctx, t_mpv mpv)
+void	Handle_Events(t_ctx *ctx, t_mpv mpv)
 {
-	while (XPending(ctx.dp))
+	while (XPending(ctx->dp))
 	{
-		XNextEvent(ctx.dp, &ctx.ev);
+		XNextEvent(ctx->dp, &ctx->ev);
 
-		switch(ctx.ev.type) { 
+		switch(ctx->ev.type) { 
 			// ??? changing Workspace affects FocusOut FocusIn too damn
 			// Them being opposite is the correct way doe. In a sense of reading at least
 			// ok so what the fuck is going on on DWM where there are no workspaces it works like the naming conventon
@@ -23,6 +25,14 @@ void	Handle_Events(t_ctx ctx, t_mpv mpv)
 			break;
 			default:
 				break;
+			case ClientMessage:
+				if((Atom)ctx->ev.xclient.data.l[0] == ctx->atoms[ATOM_WM_DELETE_WINDOW].atom)
+				{
+					write(STDOUT_FILENO, "CLOSING ALL SECURELY\n", 21); 
+					CTXFree(ctx, mpv);
+					exit(0);
+				}
+			break;
 		}
 	}
 	while ((mpv.event = mpv_wait_event(mpv.mpv, 0.0))
@@ -32,7 +42,7 @@ void	Handle_Events(t_ctx ctx, t_mpv mpv)
 	}
 }
 
-void	Draw_Foreground(t_ctx ctx, t_mpv mpv)
+void	Draw_Foreground(t_ctx *ctx, t_mpv mpv)
 {
 	(void)ctx; (void)mpv;
 	// draw
@@ -62,7 +72,7 @@ int	cmd_helper(int argc, char **argv)
 
 int	main(int argc, char **argv)
 {
-	t_ctx	ctx;
+	t_ctx	*ctx;
 	t_mpv	mpv;
 
 	if (cmd_helper(argc, argv) == 0)
@@ -73,6 +83,11 @@ int	main(int argc, char **argv)
 		ctx = change_property(ctx);
 		ctx = set_attributes(ctx);
 		ctx = lower_to_bg(ctx);
+		if (!ctx)
+		{
+			write(STDERR_FILENO, "Something Went Wrong!.\n", 24); 
+			return (1);
+		}
 		mpv = initialize_mpv_and_play(set_mpv_options(create_mpv_handle(), ctx), argv[1]);
 		render_loop(ctx, mpv, Draw_Foreground, Handle_Events);
 	}

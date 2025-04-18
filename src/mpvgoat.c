@@ -15,9 +15,12 @@ t_mpv	create_mpv_handle(void)
 	return (mpv);
 }
 
-t_mpv	set_mpv_options(t_mpv mpv, t_ctx ctx)
+t_mpv	set_mpv_options(t_mpv mpv, t_ctx *ctx)
 {	
-	snprintf(mpv.wid_str, sizeof(mpv.wid_str), "%lu", ctx.win);
+//	if(!ctx) so being able to do that t_mpv must also be allocated ig
+//		return (NULL);
+
+	snprintf(mpv.wid_str, sizeof(mpv.wid_str), "%lu", ctx->win);
 
 	mpv_set_option_string(mpv.mpv, "vo", "gpu-next");
 	mpv_set_option_string(mpv.mpv, "gpu-api", "vulkan");

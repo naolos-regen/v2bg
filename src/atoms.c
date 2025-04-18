@@ -2,7 +2,7 @@
 #include "../includes/atoms.h"
 #include <stdlib.h>
 
-t_ctx	init_atoms(t_ctx ctx)
+t_ctx	*init_atoms(t_ctx *ctx)
 {
 	int		i;
 	const char	*atom_names[ATOM_LAST] =
@@ -14,14 +14,14 @@ t_ctx	init_atoms(t_ctx ctx)
 		[ATOM_NET_WM_STATE_FOCUSED]		= "_NET_WM_STATE_FOCUSED",
 	};
 
-	ctx.atoms = malloc(sizeof(t_atoms) * ATOM_LAST);
-	if (!ctx.atoms)
-		return (ctx);
+	ctx->atoms = malloc(sizeof(t_atoms) * ATOM_LAST);
+	if (!ctx->atoms)
+		return (NULL);
 	i = 0;
 	while (i < ATOM_LAST)
 	{
-		ctx.atoms[i].atom_name	= atom_names[i];
-		ctx.atoms[i].atom	= XInternAtom(ctx.dp, atom_names[i], False);
+		ctx->atoms[i].atom_name	= atom_names[i];
+		ctx->atoms[i].atom	= XInternAtom(ctx->dp, atom_names[i], False);
 		i++;
 	}
 	return (ctx);
