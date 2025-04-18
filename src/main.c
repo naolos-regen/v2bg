@@ -1,38 +1,37 @@
 #include "../includes/v2bg.h"
 #include "../includes/atoms.h"
-#include <stdlib.h>
+#include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <X11/keysym.h>
 
-
-void	Handle_Events(t_ctx *ctx, t_mpv mpv)
+void	Handle_Events(t_ctx *ctx, t_mpv mpv, int *q)
 {
 	while (XPending(ctx->dp))
 	{
 		XNextEvent(ctx->dp, &ctx->ev);
 
 		switch(ctx->ev.type) { 
-			// ??? changing Workspace affects FocusOut FocusIn too damn
-			// Them being opposite is the correct way doe. In a sense of reading at least
-			// ok so what the fuck is going on on DWM where there are no workspaces it works like the naming conventon
-			// on I3 it doesn't
-			// This is why we can't have nice things in life :(
+			// Maybe i3 was all the friends we made along
+			// Handling Key's only work if it's not i3 :C
 			case FocusIn:
 				mpv_set_option_string(mpv.mpv, "mute", "no");
-			break;
+				break;
 			case FocusOut:
 				mpv_set_option_string(mpv.mpv, "mute", "yes");
-			break;
-			default:
 				break;
 			case ClientMessage:
 				if((Atom)ctx->ev.xclient.data.l[0] == ctx->atoms[ATOM_WM_DELETE_WINDOW].atom)
 				{
 					write(STDOUT_FILENO, "CLOSING ALL SECURELY\n", 21); 
-					CTXFree(ctx, mpv);
-					exit(0);
+					*q = 0;	
 				}
-			break;
+				break;
+			case KeyPress:
+				printf("key, pressed\n");
+				break;
+			default:
+				break;
 		}
 	}
 	while ((mpv.event = mpv_wait_event(mpv.mpv, 0.0))

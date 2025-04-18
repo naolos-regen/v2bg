@@ -27,7 +27,19 @@ t_ctx	*create_window(t_ctx *ctx)
 				ctx->screen), DisplayHeight(ctx->dp, ctx->screen), 1,
 			BlackPixel(ctx->dp, ctx->screen), WhitePixel(ctx->dp, ctx->screen));
 	// read more about XSelectInput Enums
+	
+	
+	XWMHints *wm_hints = XAllocWMHints();
+	if (wm_hints)
+	{
+		wm_hints->flags = InputHint;
+		wm_hints->input = True;
+		XSetWMHints(ctx->dp, ctx->win, wm_hints);
+		XFree(wm_hints);
+	}
+
 	XSelectInput(ctx->dp, ctx->win, FocusChangeMask | ExposureMask | KeyPressMask | ButtonPressMask);
+
 	return (ctx);
 }
 

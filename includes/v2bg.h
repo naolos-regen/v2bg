@@ -4,6 +4,7 @@
 # include <X11/Xatom.h>
 # include <X11/Xlib.h>
 # include <X11/Xutil.h>
+# include <X11/X.h>
 # include <mpv/client.h>
 
 typedef struct s_atoms
@@ -71,10 +72,10 @@ t_mpv			initialize_mpv_and_play	(t_mpv mpv, const char *filename);
 void			CTXFree		(t_ctx *ctx, t_mpv mpv);
 void			render_loop	(t_ctx *ctx, t_mpv mpv, 
 		   			void (*Draw_Foreground)(t_ctx* ,t_mpv), 
-		   			void (*Handle_Events)  (t_ctx*, t_mpv));
+		   			void (*Handle_Events)  (t_ctx*, t_mpv, int *));
 
 // Main.c
-void			Handle_Events	(t_ctx *ctx, t_mpv mpv);
+void			Handle_Events	(t_ctx *ctx, t_mpv mpv, int *q);
 void			Draw_Foreground	(t_ctx *ctx, t_mpv mpv);
 
 #endif

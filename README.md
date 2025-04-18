@@ -5,6 +5,10 @@
 - [ ] hot-loading new file
 - [ ] default-video is the last one played
 
+ok so general idea now is not to listen to any keys from this application but rather interact with the application directly 
+with the use of another application, because of how Window Managers are made differently it's almost impossible to handle it 
+properly without using infinite ammounts of ifdefs xinfo == i3 blablabla.
+
 ## Me after wanting to make it universal
 
 ![me](realisation.jpg "me after seeing how linux distributions DE WM's work XD")
