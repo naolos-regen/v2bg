@@ -1,39 +1,13 @@
 #include "../includes/v2bg.h"
-#include "../includes/atoms.h"
-#include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <X11/keysym.h>
 
 void	Handle_Events(t_ctx *ctx, t_mpv mpv, int *q)
 {
-	while (XPending(ctx->dp))
-	{
-		XNextEvent(ctx->dp, &ctx->ev);
-
-		switch(ctx->ev.type) { 
-			// Maybe i3 was all the friends we made along
-			// Handling Key's only work if it's not i3 :C
-			case FocusIn:
-				mpv_set_option_string(mpv.mpv, "mute", "no");
-				break;
-			case FocusOut:
-				mpv_set_option_string(mpv.mpv, "mute", "yes");
-				break;
-			case ClientMessage:
-				if((Atom)ctx->ev.xclient.data.l[0] == ctx->atoms[ATOM_WM_DELETE_WINDOW].atom)
-				{
-					write(STDOUT_FILENO, "CLOSING ALL SECURELY\n", 21); 
-					*q = 0;	
-				}
-				break;
-			case KeyPress:
-				printf("key, pressed\n");
-				break;
-			default:
-				break;
-		}
-	}
+	(void)ctx;
+	(void)  q;
+	// Instead of handling events it will handle temporary files (?) listening to changes if made apply
+	// I can also make sure if SIGKILL, SIGINT, SIGTERM was called and with that also CTXFree the shit out of this app
 	while ((mpv.event = mpv_wait_event(mpv.mpv, 0.0))
 		&& mpv.event->event_id != MPV_EVENT_NONE)
 	{
@@ -76,12 +50,7 @@ int	main(int argc, char **argv)
 
 	if (cmd_helper(argc, argv) == 0)
 	{
-		ctx = init_display();
-		ctx = init_atoms(ctx);
-		ctx = create_window(ctx);
-		ctx = change_property(ctx);
-		ctx = set_attributes(ctx);
-		ctx = lower_to_bg(ctx);
+		ctx = lower_to_bg(set_attributes(change_property(create_window(init_atoms(init_display())))));
 		if (!ctx)
 		{
 			write(STDERR_FILENO, "Something Went Wrong!.\n", 24); 
