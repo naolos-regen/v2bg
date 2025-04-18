@@ -6,14 +6,24 @@
 # include <X11/Xutil.h>
 # include <mpv/client.h>
 
+typedef struct s_atoms
+{
+	Atom		atom;
+	const char	*atom_name;
+
+}		t_atoms;
+
 typedef struct s_ctx
 {
 	Display		*dp;
 	Window		win;
 	Window		root;
-	int			screen;
+	int		screen;
 	XEvent		ev;
+	
+	t_atoms		*atoms;
 }				t_ctx;
+
 typedef struct s_mpv
 {
 	mpv_handle	*mpv;
@@ -22,14 +32,19 @@ typedef struct s_mpv
 	const char	*cmd;
 }				t_mpv;
 
+
 // x11.c
 t_ctx			init_display		(void);
 t_ctx			create_window		(t_ctx ctx);
 t_ctx			change_property		(t_ctx ctx);
 t_ctx			set_attributes		(t_ctx ctx);
 t_ctx			lower_to_bg		(t_ctx ctx);
+
+// atoms.c
+t_ctx			init_atoms		(t_ctx ctx);
+
+
 // mpv_goat.c
-// Create mpv handle
 t_mpv			create_mpv_handle	(void);
 t_mpv			set_mpv_options		(t_mpv mpv, t_ctx ctx);
 t_mpv			initialize_mpv_and_play	(t_mpv mpv, const char *filename);

@@ -67,7 +67,12 @@ int	main(int argc, char **argv)
 
 	if (cmd_helper(argc, argv) == 0)
 	{
-		ctx = lower_to_bg(set_attributes(change_property(create_window(init_display()))));
+		ctx = init_display();
+		ctx = init_atoms(ctx);
+		ctx = create_window(ctx);
+		ctx = change_property(ctx);
+		ctx = set_attributes(ctx);
+		ctx = lower_to_bg(ctx);
 		mpv = initialize_mpv_and_play(set_mpv_options(create_mpv_handle(), ctx), argv[1]);
 		render_loop(ctx, mpv, Draw_Foreground, Handle_Events);
 	}

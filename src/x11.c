@@ -1,4 +1,5 @@
 #include "../includes/v2bg.h"
+#include "../includes/atoms.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -29,13 +30,22 @@ t_ctx	create_window(t_ctx ctx)
 
 t_ctx	change_property(t_ctx ctx)
 {
-	Atom	win_type;
-	Atom	dp_type;
-
-	win_type = XInternAtom(ctx.dp, "_NET_WM_WINDOW_TYPE", False);
-	dp_type = XInternAtom(ctx.dp, "_NET_WM_WINDOW_TYPE_DESKTOP", False);
-	XChangeProperty(ctx.dp, ctx.win, win_type, XA_ATOM, 32, PropModeReplace,
-		(unsigned char *)&dp_type, 1);
+	Atom	*atoms;
+	int	p_cx;
+	XChangeProperty(ctx.dp, ctx.win, 
+		        ctx.atoms[ATOM_NET_WM_WINDOW_TYPE].atom, 
+		        XA_ATOM, 32, PropModeReplace,
+			(unsigned char *)&ctx.atoms[ATOM_NET_WM_WINDOW_TYPE_DESKTOP].atom
+			, 1);
+	p_cx = 3;
+	atoms = malloc(sizeof(Atom) * p_cx);
+	if (!atoms)
+		return (ctx);
+	atoms[0] = ctx.atoms[ATOM_WM_DELETE_WINDOW].atom;
+	atoms[1] = ctx.atoms[ATOM_NET_WM_STATE].atom;
+	atoms[2] = ctx.atoms[ATOM_NET_WM_STATE_FOCUSED].atom;
+	XSetWMProtocols(ctx.dp, ctx.win, atoms, p_cx);
+	free(atoms);
 	return (ctx);
 }
 
