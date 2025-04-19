@@ -9,7 +9,7 @@ ok so general idea now is not to listen to any keys from this application but ra
 with the use of another application, because of how Window Managers are made differently it's almost impossible to handle it 
 properly without using infinite ammounts of ifdefs xinfo == i3 blablabla.
 
-I somehow managed to spawn a 800x600 window on i3 that is locked and won't ever go away XDDD.
+I cut my hair bald cause of this universal thingy.
 
 ## Me after wanting to make it universal
 

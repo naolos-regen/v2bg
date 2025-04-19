@@ -40,8 +40,11 @@ t_ctx	*change_property(t_ctx *ctx)
 	XChangeProperty(ctx->dp, ctx->win, 
 		        ctx->atoms[ATOM_NET_WM_WINDOW_TYPE].atom, 
 		        XA_ATOM, 32, PropModeReplace,
-			(unsigned char *)&ctx->atoms[ATOM_NET_WM_WINDOW_TYPE_DESKTOP].atom
-			, 1);
+			(unsigned char *)&ctx->atoms[ATOM_NET_WM_WINDOW_TYPE_DESKTOP].atom, 1);
+	XChangeProperty(ctx->dp, ctx->win,
+			ctx->atoms[ATOM_NET_WM_STATE].atom,
+			XA_ATOM, 32, PropModeReplace,
+			(unsigned char *)&ctx->atoms[ATOM_NET_WM_STATE_BELOW].atom, 1);
 	p_cx = 3;
 	atoms = malloc(sizeof(Atom) * p_cx);
 	if (!atoms)
