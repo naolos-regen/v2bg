@@ -48,7 +48,6 @@ t_ctx	*change_property(t_ctx *ctx)
 		return (ctx);
 	atoms[0] = ctx->atoms[ATOM_WM_DELETE_WINDOW].atom;
 	atoms[1] = ctx->atoms[ATOM_NET_WM_STATE].atom;
-	atoms[2] = ctx->atoms[ATOM_NET_WM_STATE_BELOW].atom;
 	atoms[2] = ctx->atoms[ATOM_NET_WM_STATE_FOCUSED].atom;
 	XSetWMProtocols(ctx->dp, ctx->win, atoms, p_cx);
 	free(atoms);
