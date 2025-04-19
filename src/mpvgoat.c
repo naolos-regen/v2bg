@@ -30,10 +30,12 @@ t_mpv	set_mpv_options(t_mpv mpv, t_ctx *ctx)
 	mpv_set_option_string(mpv.mpv, "loop", "inf");
 	mpv_set_option_string(mpv.mpv, "idle", "yes");	
 	if (handle)
+	{
 		mpv_set_option_string(mpv.mpv, "hwdec", "auto");
+		dlclose(handle);
+	}
 	else
 		printf("mpv starting without hardware acceleration, download libcuda.so. Error %s\n", dlerror());
-	dlclose(handle);
 	return (mpv);
 }
 
