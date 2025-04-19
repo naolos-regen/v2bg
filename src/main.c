@@ -4,10 +4,26 @@
 
 void	Handle_Events(t_ctx *ctx, t_mpv mpv, int *q)
 {
-	(void)ctx;
-	(void)  q;
 	// Instead of handling events it will handle temporary files (?) listening to changes if made apply
 	// I can also make sure if SIGKILL, SIGINT, SIGTERM was called and with that also CTXFree the shit out of this app
+	while (XPending(ctx->dp))
+	{
+		XNextEvent(ctx->dp, &ctx->ev);
+		switch(ctx->ev.type)
+		{
+			case Expose:
+				XClearWindow(ctx->dp, ctx->win);
+			break;
+			case KeyPress:
+				{
+					KeySym key = XLookupKeysym(&ctx->ev.xkey, 0);
+					if ((ctx->ev.xkey.state & Mod1Mask) && key == XK_q)
+						*q = 0;
+				}
+			break;
+
+		}
+	}
 	while ((mpv.event = mpv_wait_event(mpv.mpv, 0.0))
 		&& mpv.event->event_id != MPV_EVENT_NONE)
 	{

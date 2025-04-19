@@ -28,16 +28,6 @@ t_ctx	*create_window(t_ctx *ctx)
 			BlackPixel(ctx->dp, ctx->screen), WhitePixel(ctx->dp, ctx->screen));
 	// read more about XSelectInput Enums
 	
-	
-	XWMHints *wm_hints = XAllocWMHints();
-	if (wm_hints)
-	{
-		wm_hints->flags = InputHint;
-		wm_hints->input = True;
-		XSetWMHints(ctx->dp, ctx->win, wm_hints);
-		XFree(wm_hints);
-	}
-
 	XSelectInput(ctx->dp, ctx->win, FocusChangeMask | ExposureMask | KeyPressMask | ButtonPressMask);
 
 	return (ctx);
@@ -58,6 +48,7 @@ t_ctx	*change_property(t_ctx *ctx)
 		return (ctx);
 	atoms[0] = ctx->atoms[ATOM_WM_DELETE_WINDOW].atom;
 	atoms[1] = ctx->atoms[ATOM_NET_WM_STATE].atom;
+	atoms[2] = ctx->atoms[ATOM_NET_WM_STATE_BELOW].atom;
 	atoms[2] = ctx->atoms[ATOM_NET_WM_STATE_FOCUSED].atom;
 	XSetWMProtocols(ctx->dp, ctx->win, atoms, p_cx);
 	free(atoms);
@@ -75,8 +66,10 @@ t_ctx	*set_attributes(t_ctx *ctx)
 
 t_ctx	*lower_to_bg(t_ctx *ctx)
 {
+	XWindowChanges changes;
+	changes.stack_mode = Below;
+	XConfigureWindow(ctx->dp, ctx->win, CWStackMode, &changes);
 	XMapWindow(ctx->dp, ctx->win);
-	XLowerWindow(ctx->dp, ctx->win);
 	XFlush(ctx->dp);
 	return (ctx);
 }
