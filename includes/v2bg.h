@@ -40,8 +40,6 @@ typedef struct s_web
 }				t_web;
 */
 // errormsg.c
-void			t_ctx_error	(t_ctx *ctx, const char *msg);
-void			t_mpv_error	(t_mpv *mpv, const char *msg);
 void			error_msg	(void  *ptr, const char *msg);
 
 

@@ -9,7 +9,7 @@ t_mpv	create_mpv_handle(void)
 
 	mpv.mpv = mpv_create();
 	if (!mpv.mpv)
-		t_mpv_error(&mpv, "create_mpv_failed\n");
+		error_msg(&mpv, "create_mpv_failed\n");
 	return (mpv);
 }
 
@@ -32,14 +32,14 @@ t_mpv	set_mpv_options(t_mpv mpv, t_ctx *ctx)
 		dlclose(handle);
 	}
 	else
-		printf("mpv starting without hardware acceleration, download libcuda.so. Error %s\n", dlerror());
+		error_msg((void*)0, "mpv starting without hardware acceleration, download libcuda.so");
 	return (mpv);
 }
 
 t_mpv	initialize_mpv_and_play(t_mpv mpv, const char *file_name)
 {	
 	if (mpv_initialize(mpv.mpv) < 0)
-		t_mpv_error(&mpv, "mpv_initialize failed\n");
+		error_msg(&mpv, "mpv_initialize failed\n");
 	const char *cmd[] = { "loadfile", file_name, NULL };
 	mpv_command(mpv.mpv, cmd);
 	return (mpv);

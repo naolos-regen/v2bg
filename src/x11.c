@@ -10,13 +10,13 @@ t_ctx	*init_display(void)
 	ctx = malloc(sizeof(t_ctx));
 	if (!ctx)
 	{	
-		error_msg((void *)ctx, "couldn't allocate failed\n");
+		error_msg(ctx, "couldn't allocate failed\n");
 		return (NULL);
 	}
 	ctx->dp = XOpenDisplay(NULL);
 	if (!ctx->dp)
 	{
-		error_msg((void *)ctx, "Cannot open display\n");
+		error_msg(ctx, "Cannot open display\n");
 		return (NULL);
 	}
 	ctx->screen = DefaultScreen(ctx->dp);

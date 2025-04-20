@@ -44,17 +44,17 @@ void	initialize()
 
 	ctx = init_display();
 	if (!ctx)
-		t_ctx_error(ctx, "Couldn't initialize display\n");
+		error_msg(ctx, "Couldn't initialize display\n");
 	ctx = init_atoms(ctx);
 	if (!ctx)
-		t_ctx_error(ctx, "Couldn't initialize atoms\n");
+		error_msg(ctx, "Couldn't initialize atoms\n");
 	ctx = create_window(ctx);
 	ctx = change_property(ctx);
 	if (!ctx)
-		t_ctx_error(ctx, "Change_property failed\n");
+		error_msg(ctx, "Change_property failed\n");
 	ctx = set_attributes(ctx);
 	if (!ctx)
-		t_ctx_error(ctx, "Setting attributes returned NULL\n");
+		error_msg(ctx, "Setting attributes returned NULL\n");
 	ctx = lower_to_bg(ctx);
 
 	mpv = create_mpv_handle();
@@ -96,7 +96,7 @@ int	main(int argc, char **argv)
 		ctx = lower_to_bg(set_attributes(change_property(create_window(init_atoms(init_display())))));
 		if (!ctx)
 		{
-			write(STDERR_FILENO, "Something Went Wrong!.\n", 24); 
+			error_msg((void *)0, "Something Went Wrong\n");
 			return (1);
 		}
 		mpv = initialize_mpv_and_play(set_mpv_options(create_mpv_handle(), ctx), argv[1]);
