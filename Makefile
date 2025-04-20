@@ -12,8 +12,11 @@ all: $(TARGET)
 $(TARGET):$(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
-obj/%.o: src/%.c
+obj/%.o: src/%.c | obj
 	$(CC) $(CFLAGS) -c $< -o $@
+
+obj:
+	mkdir -p obj
 
 clean:
 	rm -f $(OBJS) $(TARGET)
