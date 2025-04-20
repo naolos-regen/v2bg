@@ -42,6 +42,8 @@ typedef struct s_web
 // errormsg.c
 void			error_msg	(void  *ptr, const char *msg);
 
+// print.c
+int			ft_snprintf	(char *buf, size_t size, const char *fmt, ...);
 
 // x11.c
 t_ctx			*init_display		(void);

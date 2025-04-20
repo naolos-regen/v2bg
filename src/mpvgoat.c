@@ -1,5 +1,4 @@
 #include "../includes/v2bg.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
 
@@ -19,7 +18,7 @@ t_mpv	set_mpv_options(t_mpv mpv, t_ctx *ctx)
 //		return (NULL);
 	void *handle = dlopen("libcuda.so", RTLD_LAZY);
 	
-	snprintf(mpv.wid_str, sizeof(mpv.wid_str), "%lu", ctx->win);
+	ft_snprintf(mpv.wid_str, sizeof(mpv.wid_str), "%lu", ctx->win);
 	mpv_set_option_string(mpv.mpv, "vo", "gpu-next");
 	mpv_set_option_string(mpv.mpv, "gpu-api", "vulkan");
 	mpv_set_option_string(mpv.mpv, "wid", mpv.wid_str);
