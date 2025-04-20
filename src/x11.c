@@ -9,11 +9,14 @@ t_ctx	*init_display(void)
 	
 	ctx = malloc(sizeof(t_ctx));
 	if (!ctx)
+	{	
+		error_msg((void *)ctx, "couldn't allocate failed\n");
 		return (NULL);
+	}
 	ctx->dp = XOpenDisplay(NULL);
 	if (!ctx->dp)
 	{
-		fprintf(stderr, "Cannot open dislpay\n");
+		error_msg((void *)ctx, "Cannot open display\n");
 		return (NULL);
 	}
 	ctx->screen = DefaultScreen(ctx->dp);
@@ -48,7 +51,7 @@ t_ctx	*change_property(t_ctx *ctx)
 	p_cx = 3;
 	atoms = malloc(sizeof(Atom) * p_cx);
 	if (!atoms)
-		return (ctx);
+		return (NULL);
 	atoms[0] = ctx->atoms[ATOM_WM_DELETE_WINDOW].atom;
 	atoms[1] = ctx->atoms[ATOM_NET_WM_STATE].atom;
 	atoms[2] = ctx->atoms[ATOM_NET_WM_STATE_FOCUSED].atom;

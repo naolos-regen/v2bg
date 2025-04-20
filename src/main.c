@@ -37,6 +37,33 @@ void	Draw_Foreground(t_ctx *ctx, t_mpv mpv)
 	// draw
 }
 
+void	initialize()
+{
+	t_ctx	*ctx;
+	t_mpv	mpv;
+
+	ctx = init_display();
+	if (!ctx)
+		t_ctx_error(ctx, "Couldn't initialize display\n");
+	ctx = init_atoms(ctx);
+	if (!ctx)
+		t_ctx_error(ctx, "Couldn't initialize atoms\n");
+	ctx = create_window(ctx);
+	ctx = change_property(ctx);
+	if (!ctx)
+		t_ctx_error(ctx, "Change_property failed\n");
+	ctx = set_attributes(ctx);
+	if (!ctx)
+		t_ctx_error(ctx, "Setting attributes returned NULL\n");
+	ctx = lower_to_bg(ctx);
+
+	mpv = create_mpv_handle();
+	mpv = set_mpv_options(mpv, ctx);
+	mpv = initialize_mpv_and_play(mpv, "");
+
+	render_loop(ctx, mpv, Draw_Foreground, Handle_Events);
+}
+
 int	cmd_helper(int argc, char **argv)
 {
 	int	n;

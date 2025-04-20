@@ -9,10 +9,7 @@ t_mpv	create_mpv_handle(void)
 
 	mpv.mpv = mpv_create();
 	if (!mpv.mpv)
-	{
-		fprintf(stderr, "create_mpv_failed\n");
-		exit(1);
-	}
+		t_mpv_error(&mpv, "create_mpv_failed\n");
 	return (mpv);
 }
 
@@ -30,7 +27,7 @@ t_mpv	set_mpv_options(t_mpv mpv, t_ctx *ctx)
 	mpv_set_option_string(mpv.mpv, "loop", "inf");
 	mpv_set_option_string(mpv.mpv, "idle", "yes");	
 	if (handle)
-	{
+	{	// example good to know i can read .so(s)
 		mpv_set_option_string(mpv.mpv, "hwdec", "auto");
 		dlclose(handle);
 	}
@@ -42,10 +39,7 @@ t_mpv	set_mpv_options(t_mpv mpv, t_ctx *ctx)
 t_mpv	initialize_mpv_and_play(t_mpv mpv, const char *file_name)
 {	
 	if (mpv_initialize(mpv.mpv) < 0)
-	{
-		fprintf(stderr, "mpv_init error\n");
-		exit(1);
-	}
+		t_mpv_error(&mpv, "mpv_initialize failed\n");
 	const char *cmd[] = { "loadfile", file_name, NULL };
 	mpv_command(mpv.mpv, cmd);
 	return (mpv);

@@ -39,6 +39,12 @@ typedef struct s_web
 
 }				t_web;
 */
+// errormsg.c
+void			t_ctx_error	(t_ctx *ctx, const char *msg);
+void			t_mpv_error	(t_mpv *mpv, const char *msg);
+void			error_msg	(void  *ptr, const char *msg);
+
+
 // x11.c
 t_ctx			*init_display		(void);
 t_ctx			*create_window		(t_ctx *ctx);
@@ -64,5 +70,7 @@ void			render_loop	(t_ctx *ctx, t_mpv mpv,
 // Main.c
 void			Handle_Events	(t_ctx *ctx, t_mpv mpv, int *q);
 void			Draw_Foreground	(t_ctx *ctx, t_mpv mpv);
+void			initialize	();
+
 
 #endif
