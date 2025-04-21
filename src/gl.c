@@ -2,17 +2,18 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-void	CTXFree(t_ctx *ctx, t_mpv mpv)
+void	CTXFree(t_ctx *ctx, t_mpv *mpv)
 {	
-	mpv_terminate_destroy(mpv.mpv);
-	XDestroyWindow(ctx->dp, ctx->win);
-	XCloseDisplay(ctx->dp);
+	if (mpv)
+		mpv_terminate_destroy(mpv->mpv);
+	if (ctx->dp)
+		XCloseDisplay(ctx->dp);
 	if (ctx->atoms)
-	{
 		free(ctx->atoms);
-		ctx->atoms = NULL;
-	}
-	free(ctx);
+	if (ctx->monitors)
+		XFree(ctx->monitors);
+	if (ctx)
+		free(ctx);
 }
 
 void	render_loop(t_ctx *ctx, 
@@ -44,5 +45,5 @@ void	render_loop(t_ctx *ctx,
 			Draw_Foreground(ctx, mpv);
 		}
 	}
-	CTXFree(ctx, mpv);
+	CTXFree(ctx, &mpv);
 }

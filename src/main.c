@@ -4,8 +4,6 @@
 
 void	Handle_Events(t_ctx *ctx, t_mpv mpv, int *q)
 {
-	// Instead of handling events it will handle temporary files (?) listening to changes if made apply
-	// I can also make sure if SIGKILL, SIGINT, SIGTERM was called and with that also CTXFree the shit out of this app
 	while (XPending(ctx->dp))
 	{
 		XNextEvent(ctx->dp, &ctx->ev);
@@ -38,29 +36,33 @@ void	Draw_Foreground(t_ctx *ctx, t_mpv mpv)
 }
 
 void	initialize()
-{
+{	
+	int i;
 	t_ctx	*ctx;
 	t_mpv	mpv;
 
 	ctx = init_display();
 	if (!ctx)
 		error_msg(ctx, "Couldn't initialize display\n");
-	ctx = init_atoms(ctx);
-	if (!ctx)
-		error_msg(ctx, "Couldn't initialize atoms\n");
-	ctx = create_window(ctx);
-	ctx = change_property(ctx);
-	if (!ctx)
-		error_msg(ctx, "Change_property failed\n");
-	ctx = set_attributes(ctx);
-	if (!ctx)
-		error_msg(ctx, "Setting attributes returned NULL\n");
-	ctx = lower_to_bg(ctx);
-
+	i = 0;
+	while (i < ctx->monitor_cx)
+	{	
+		XineramaScreenInfo m = ctx->monitors[i];
+		ctx = init_atoms(ctx);
+		if (!ctx)
+			error_msg(ctx, "Couldn't initialize atoms\n");
+		ctx = create_multi_window(ctx, m.x_org, m.y_org, m.width, m.height);
+		ctx = change_property(ctx);
+		if (!ctx)
+			error_msg(ctx, "Change_property failed\n");
+		ctx = set_attributes(ctx);
+		if (!ctx)
+			error_msg(ctx, "Setting attributes returned NULL\n");
+		ctx = lower_to_bg(ctx);
+	}
 	mpv = create_mpv_handle();
 	mpv = set_mpv_options(mpv, ctx);
 	mpv = initialize_mpv_and_play(mpv, "");
-
 	render_loop(ctx, mpv, Draw_Foreground, Handle_Events);
 }
 
@@ -93,7 +95,12 @@ int	main(int argc, char **argv)
 
 	if (cmd_helper(argc, argv) == 0)
 	{
-		ctx = lower_to_bg(set_attributes(change_property(create_window(init_atoms(init_display())))));
+		ctx = init_display();
+		ctx = init_atoms(ctx);
+		ctx = create_window(ctx);
+		ctx = change_property(ctx);
+		ctx = set_attributes(ctx);
+		ctx = lower_to_bg(ctx);
 		if (!ctx)
 		{
 			error_msg((void *)0, "Something Went Wrong\n");

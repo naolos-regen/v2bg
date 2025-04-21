@@ -5,6 +5,8 @@
 
 t_ctx	*init_display(void)
 {
+	int event_base;
+	int error_base;
 	t_ctx	*ctx;
 	
 	ctx = malloc(sizeof(t_ctx));
@@ -21,6 +23,13 @@ t_ctx	*init_display(void)
 	}
 	ctx->screen = DefaultScreen(ctx->dp);
 	ctx->root   = RootWindow(ctx->dp, ctx->screen);
+	if (!XineramaQueryExtension(ctx->dp, &event_base, &error_base))
+		error_msg(ctx, "Xinerama is not available\n");
+	if (!XineramaIsActive(ctx->dp))
+		error_msg(ctx, "Xinerama is not active\n");
+	ctx->monitors = XineramaQueryScreens(ctx->dp, &ctx->monitor_cx);
+	if (!ctx->monitors)
+		error_msg_quit(ctx, "Couldn't get monitor information\n", 6);
 	return (ctx);
 }
 
@@ -31,8 +40,17 @@ t_ctx	*create_window(t_ctx *ctx)
 			BlackPixel(ctx->dp, ctx->screen), WhitePixel(ctx->dp, ctx->screen));
 	// read more about XSelectInput Enums
 	
-	XSelectInput(ctx->dp, ctx->win, FocusChangeMask | ExposureMask | KeyPressMask | ButtonPressMask);
+	XSelectInput(ctx->dp, ctx->win, FocusChangeMask | ExposureMask | KeyPressMask);
 
+	return (ctx);
+}
+
+t_ctx	*create_multi_window(t_ctx *ctx, int x, int y, int w, int h)
+{	
+	ctx->win = XCreateSimpleWindow(ctx->dp, ctx->root, x, y, w, h, 1, 
+				       BlackPixel(ctx->dp, ctx->screen), BlackPixel(ctx->dp, ctx->screen));
+
+	XSelectInput(ctx->dp, ctx->win, FocusChangeMask | ExposureMask | KeyPressMask);
 	return (ctx);
 }
 
